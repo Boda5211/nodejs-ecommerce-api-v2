@@ -41,3 +41,34 @@ exports.getProductByID=asyncHandler(async (req,res)=>{
     if(!product)return res.status(404).json({msg:`no product for this id ${id}`});
     res.status(200).json({data:product})
 });
+
+// @desc create product 
+// @route  get /api/v1/product
+// @access public
+exports.createProduct=asyncHandler(async (req,res)=>{
+        const {name}=req.body;
+        if(!name){
+            return res.status(400).json({msg:"product name is required"});
+        }
+        const pool=await sql.connect(config);
+        await pool.request()
+        .input('name',sql.NVarChar,name)
+        .query('insert into product(name) values(@name)');
+        res.status(201).json({msg:'praduct created'});
+});
+
+// @desc update product 
+// @route  get /api/v1/product
+// @access public
+exports.UpdateProduct=asyncHandler(async (req,res)=>{
+        const {id}=req.params;
+        const {name}=req.body;
+        const pool =await sql.connect(config);
+       const result= await pool.request()
+        .input('id',sql.Int,id)
+        .input('name',sql.NVarChar,name)
+        .query(`update product set name=@name where id=@id
+          select * from product where id=@id `);
+          const product=result.recordset[0];
+          res.status(200).json({data:product})
+})
