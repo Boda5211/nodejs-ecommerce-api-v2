@@ -4,4 +4,5 @@ exports.insertCategory=async(name)=>{
     return await pool.request().
     input('name',sql.NVarChar,name)
     .query('insert into product (name) values (@name)');
-};s
+};
+
