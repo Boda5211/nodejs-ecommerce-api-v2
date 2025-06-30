@@ -1,10 +1,5 @@
 node_modules/
  
-<<<<<<< HEAD
+
  config.env
  config2.env
-=======
- config.env/
- config2.env/
->>>>>>> b9daee0c939d93154e13b00ad6e8b64ae03db415
- config33.env
