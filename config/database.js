@@ -1,9 +1,7 @@
-const sql = require('mssql');
+const sql =require ('mssql');
 const dotenv = require('dotenv');
-
-dotenv.config({ path: 'config.env' });
-
-const config = {
+dotenv.config({path:'config2.env'});
+const config={
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     server: process.env.DB_SERVER,
@@ -14,16 +12,24 @@ const config = {
         trustServerCertificate: true
     }
 };
-
-const dbConnection = async () => {
-    try {
-        const pool = await sql.connect(config);
-        console.log(`✅ Connected to SQL Server at ${config.server}`);
+const dbConnection=async()=>{
+    try{
+        const pool =await sql.connect(config);
+        console.log(`connected to sql server at ${config.server}`);
         return pool;
-    } catch (err) {
-        console.error('❌ Database connection error:', err);
+    }catch(err){
+        console.error(`❌ Database connection error`,err);
         process.exit(1);
     }
 };
-
 module.exports = { dbConnection, config, sql };
+
+
+
+
+
+
+
+
+
+

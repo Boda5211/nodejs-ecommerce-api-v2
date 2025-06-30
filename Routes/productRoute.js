@@ -1,13 +1,8 @@
-const express = require('express');
-const { getProducts, saveproduct ,getProductByID,
-    createProduct,UpdateProduct} = require('../Controllers/productService');
+const express=require('express');
+const{saveproduct}=require('../services/productServices');
 
-const router = express.Router();
+const router =express.Router();
 
-// POST /api/v1/product   //, saveproduct
-router.post('/',createProduct);
+router.post('/',saveproduct);
 
-// GET /api/v1/product
-router.get('/', getProducts);
-router.route("/:id").get(getProductByID).put(UpdateProduct);
-module.exports = router;
+module.exports=router;
