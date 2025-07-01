@@ -2,7 +2,7 @@
 const express=require('express');
 const dotenv=require('dotenv');
 const morgan=require('morgan');
-const { dbConnection } = require('./config/database');
+//const { dbConnection } = require('./config/database');
 const productRoute=require('./Routes/productRoute');
 
 
@@ -18,7 +18,7 @@ if(process.env.NODE_ENV ==='development_33'){
     
 }
 //طباعه فقط
-dbConnection();
+//dbConnection();
 
 app.use('/pr',productRoute);
 app.get('/',(req,res)=>{
