@@ -30,3 +30,12 @@ const PORT=process.env.PORT ||9000;
 app.listen(PORT,()=>{
     console.log(`app running on port ${PORT}`);
 });
+
+
+
+/*const slugify = require('slugify');
+
+const title = "أفضل 10 طرق لتعلم البرمجة في 2025";
+const slug = slugify(title, { lower: true, strict: true });
+
+console.log(slug); // afdl-10-trq-ltaalm-lbrmjh-fy-2025*/

@@ -1,9 +1,10 @@
 const {sql,config}=require('../config/database');
-
+const slugify=require('slugify');
 
 //insert product
 exports.insertProduct=async(name)=>{
     const pool =await sql.connect(config);
+    const slug=slugify(name,{lower:true,strict:true});
     return await pool.request().
     input('name',sql.NVarChar,name)
     .query('insert into product (name) values (@name)');
@@ -35,23 +36,12 @@ exports.UpdateProduct=async(id,name)=>{
     .input('name',sql.NVarChar,name)
     .query('update product set name=@name where id=@id');
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//delete product
 exports.DeleteProduct=async(id)=>{
-    const pool=sql.connect(config);
-    return await pool
+    const pool= await sql.connect(config);
+    return await pool.request().
+    input('id',sql.Int,id)
+    .query('delete from product where id=@id');
 }
 
 
