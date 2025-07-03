@@ -2,18 +2,28 @@ const {sql,config}=require('../config/database');
 const slugify=require('slugify');
 
 //insert product
+
 exports.insertProduct=async(name)=>{
     const pool =await sql.connect(config);
     const slug=slugify(name,{lower:true,strict:true});
     return await pool.request().
     input('name',sql.NVarChar,name)
-    .query('insert into product (name) values (@name)');
+    .input('slug',sql.NVarChar,slug)
+    .query('insert into product (name,slug) values (@name,@slug)');
 };
 //get all product 
-exports.getAllProduct=async()=>{
+exports.getAllProduct=async function(page,limit){
     const pool =await sql.connect(config);
-    return await pool.request().query('select * from product order by id');
+    const skip=(page -1)*limit;
+    return await pool.request()
+    .input('skip',sql.Int,skip)
+    .input('limit',sql.Int,limit).
+    query(`select * from product order by id 
+          offset @skip rows fetch next @limit rows only`);
 };
+
+// @route git /id
+// @access public
 //get product by id
 exports.getProductByID=async(id)=>{
     const pool =await sql.connect(config);

@@ -8,7 +8,8 @@ const {
   getProductByID,
   searchAproduct,UpdateProduct,DeleteProduct
 } = require('../models/productModel');
-
+// @route post /
+// @access public
 exports.saveproduct=asyncHandler(async(req,res)=>{
     const {name}=req.body;
    if(!name){
@@ -20,10 +21,15 @@ exports.saveproduct=asyncHandler(async(req,res)=>{
 });
 
 exports.GetAllProduct=asyncHandler(async(req,res)=>{
-    const result =await getAllProduct();
-    res.status(200).json(result.recordset);
+    const page=req.query.page *1 ||1;
+    const limit=req.query.limit *1 || 5;
+    //const skip=(page-1)*limit;
+    const result =await getAllProduct(page,limit);
+    res.status(200).json({page,limit,count:result.recordset.length,data:result.recordset});
 });
-
+// @route git /id
+// @access public
+//get product by id
 exports.GetProductBYID =asyncHandler(async(req,res)=>{
     const id=req.params.id;
     const result=await getProductByID(id);
