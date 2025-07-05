@@ -60,13 +60,14 @@ exports.updateproduct=asyncHandler(async(req,res)=>{
     if(!id || !name){
         return res.status(400).json({error:'error'});
     }
+   // const update= await UpdateProduct(id,name);
     const result= await UpdateProduct(id,name);
 
-    if(result.rowsAffected[0] ===0){
+    if(!result){
 
         return res.status(404).json({error:'لم يتم التعرف'});
     }
-    res.status(200).json({message:'done'});
+    res.status(200).json({message:'done',data:result});
 });
 exports.deleteproduct=asyncHandler(async(req,res)=>{
     const id =parseInt(req.params.id);

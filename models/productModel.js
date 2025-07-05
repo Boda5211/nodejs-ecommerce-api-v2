@@ -41,10 +41,20 @@ exports.searchAproduct = async (keyword) => {
 //update product 
 exports.UpdateProduct=async(id,name)=>{
     const pool =await sql.connect(config);
-    return await pool.request()
+    const slug=slugify(name,{lower:true,strict:true});
+    const updateResult= await pool.request()
     .input('id',sql.Int,id)
     .input('name',sql.NVarChar,name)
-    .query('update product set name=@name where id=@id');
+    .input('slug',sql.NVarChar,slug)
+    .query('update product set name=@name , slug=@slug where id=@id');
+     if (updateResult.rowsAffected[0] === 0) {
+        return null; // مفيش صف اتأثر => مفيش منتج بالـ id ده
+    }
+    const result=await pool.request().
+    input('id',sql.Int,id)
+    .query('select * from product where id =@id');
+    
+    return result.recordset[0];
 }
 //delete product
 exports.DeleteProduct=async(id)=>{
