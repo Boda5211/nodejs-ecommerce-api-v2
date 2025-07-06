@@ -1,5 +1,6 @@
 const asyncHandler=require(`express-async-handler`);
 const slugify=require('slugify');
+const ApiError=require('../utils/apiError');
 //const {sql , config}=require(`../config/database`);
 //const {insertProduct,getAllProduct,getProductByID,searchAproduct}=require('../Models/productModel');
 const {
@@ -30,11 +31,14 @@ exports.GetAllProduct=asyncHandler(async(req,res)=>{
 // @route git /id
 // @access public
 //get product by id
-exports.GetProductBYID =asyncHandler(async(req,res)=>{
+exports.GetProductBYID =asyncHandler(async(req,res,next)=>{
     const id=req.params.id;
+    if(isNaN(id)||!id){
+       return next(new ApiError(`id ${id} not found`,400));
+    }
     const result=await getProductByID(id);
-    if(result.recordset.length === 0 )
-        return res.status(404).json({error:'المنتج غير موجود'});
+     if(result.recordset.length === 0 )
+         return res.status(404).json({error:'المنتج غير موجود'});
     res.status(200).json(result.recordset);
 });
 exports.searchAboutProduct = asyncHandler(async (req, res) => {
@@ -53,11 +57,14 @@ exports.searchAboutProduct = asyncHandler(async (req, res) => {
 
     res.status(200).json(result.recordset);
 });
-exports.updateproduct=asyncHandler(async(req,res)=>{
+exports.updateproduct=asyncHandler(async(req,res,next)=>{
     const id=parseInt(req.params.id);
+    if(!id){
+        return next(new ApiError(`id is not valid or found  ${id}`,400));
+    }
     const { name }=req.body;
     
-    if(!id || !name){
+    if(!name){
         return res.status(400).json({error:'error'});
     }
    // const update= await UpdateProduct(id,name);
