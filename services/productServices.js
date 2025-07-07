@@ -1,5 +1,5 @@
 const asyncHandler=require(`express-async-handler`);
-const slugify=require('slugify');
+
 const ApiError=require('../utils/apiError');
 //const {sql , config}=require(`../config/database`);
 //const {insertProduct,getAllProduct,getProductByID,searchAproduct}=require('../Models/productModel');
