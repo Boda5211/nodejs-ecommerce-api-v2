@@ -13,7 +13,7 @@ const config={
     }
 };
 const dbConnection=async()=>{
-    try{
+   try{
         const pool =await sql.connect(config);
         console.log(`connected to sql server at ${config.server}`);
         return pool;
