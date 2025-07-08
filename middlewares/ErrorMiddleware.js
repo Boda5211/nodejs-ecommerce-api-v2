@@ -5,7 +5,7 @@ const globalError=(err,req,res,next)=>{
   if(process.env.NODE_ENV==='development'){
     globalErrorForDev(err,res);
   }
-  else if(process.env.NODE_ENV==='production'){
+  else if(process.env.NODE_ENV==='categoryion'){
     globalErrorForProd(err,res);
   }
 };

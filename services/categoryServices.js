@@ -2,46 +2,46 @@ const asyncHandler=require(`express-async-handler`);
 
 const ApiError=require('../utils/apiError');
 //const {sql , config}=require(`../config/database`);
-//const {insertProduct,getAllProduct,getProductByID,searchAproduct}=require('../Models/productModel');
+//const {insertcategory,getAllcategory,getcategoryByID,searchAcategory}=require('../Models/categoryModel');
 const {
-  insertProduct,
-  getAllProduct,
-  getProductByID,
-  searchAproduct,UpdateProduct,DeleteProduct
-} = require('../models/productModel');
+  insertcategory,
+  getAllcategory,
+  getcategoryByID,
+  searchAcategory,Updatecategory,Deletecategory
+} = require('../models/categoryModel');
 // @route post /
 // @access public
-exports.saveproduct=asyncHandler(async(req,res)=>{
+exports.savecategory=asyncHandler(async(req,res)=>{
     const {name}=req.body;
    if(!name){
     return res.status(400).json({error:'name is required'});
 
    }
-   await insertProduct(name);
+   await insertcategory(name);
    res.status(201).json({message:'✔️ تمت الإضافة بنجاح'});
 });
 
-exports.GetAllProduct=asyncHandler(async(req,res)=>{
+exports.GetAllcategory=asyncHandler(async(req,res)=>{
     const page=req.query.page *1 ||1;
     const limit=req.query.limit *1 || 5;
     //const skip=(page-1)*limit;
-    const result =await getAllProduct(page,limit);
+    const result =await getAllcategory(page,limit);
     res.status(200).json({page,limit,count:result.recordset.length,data:result.recordset});
 });
 // @route git /id
 // @access public
-//get product by id
-exports.GetProductBYID =asyncHandler(async(req,res,next)=>{
+//get category by id
+exports.GetcategoryBYID =asyncHandler(async(req,res,next)=>{
     const id=req.params.id;
     if(isNaN(id)||!id){
        return next(new ApiError(`id ${id} not found`,400));
     }
-    const result=await getProductByID(id);
+    const result=await getcategoryByID(id);
      if(result.recordset.length === 0 )
          return res.status(404).json({error:'المنتج غير موجود'});
     res.status(200).json(result.recordset);
 });
-exports.searchAboutProduct = asyncHandler(async (req, res) => {
+exports.searchAboutcategory = asyncHandler(async (req, res) => {
     const keyword = req.query.q?.trim(); // حذف المسافات والسطر الجديد
 
     // ✅ هنا مكان السطر اللي سألته عنه:
@@ -49,7 +49,7 @@ exports.searchAboutProduct = asyncHandler(async (req, res) => {
         return res.status(400).json({ error: 'كلمة البحث مطلوبة' });
     }
 
-    const result = await searchAproduct(keyword);
+    const result = await searchAcategory(keyword);
 
     if (result.recordset.length < 1) {
         return res.status(404).json({ error: 'غير موجود' });
@@ -57,7 +57,7 @@ exports.searchAboutProduct = asyncHandler(async (req, res) => {
 
     res.status(200).json(result.recordset);
 });
-exports.updateproduct=asyncHandler(async(req,res,next)=>{
+exports.updatecategory=asyncHandler(async(req,res,next)=>{
     const id=parseInt(req.params.id);
     if(!id){
         return next(new ApiError(`id is not valid or found  ${id}`,400));
@@ -67,8 +67,8 @@ exports.updateproduct=asyncHandler(async(req,res,next)=>{
     if(!name){
         return res.status(400).json({error:'error'});
     }
-   // const update= await UpdateProduct(id,name);
-    const result= await UpdateProduct(id,name);
+   // const update= await Updatecategory(id,name);
+    const result= await Updatecategory(id,name);
 
     if(!result){
 
@@ -76,11 +76,11 @@ exports.updateproduct=asyncHandler(async(req,res,next)=>{
     }
     res.status(200).json({message:'done',data:result});
 });
-exports.deleteproduct=asyncHandler(async(req,res)=>{
+exports.deletecategory=asyncHandler(async(req,res)=>{
     const id =parseInt(req.params.id);
     if(!id)
          return res.status(400).json({error:'not found'});
-    const result= await DeleteProduct(id);
+    const result= await Deletecategory(id);
     if(result.rowsAffected[0]===0)
         return res.status(404).json({error:'No row Affrcted'});
     res.status(200).json({message:`Deleted ${id} successfully`});

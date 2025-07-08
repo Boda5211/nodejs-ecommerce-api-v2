@@ -4,7 +4,10 @@ const dotenv=require('dotenv');
 const morgan=require('morgan');
 const { dbConnection } = require('./config/database');
 dotenv.config({ path: 'config2.env' });
-const productRoute=require('./Routes/productRoute');
+const categoryRoute=require('./Routes/categoryRoute');
+const subcategoryRoute=require('./Routes/subcategoryRoute');
+const brandsRoute=require('./Routes/brandsRoute');
+const ProductsRoute=require('./Routes/ProductsRoute');
 const ApiError=require('./utils/apiError');
 const globalError=require('./middlewares/ErrorMiddleware');
 
@@ -15,7 +18,10 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
   console.log(`node:${process.env.NODE_ENV}`);
 }
- app.use('/pr', productRoute);
+ app.use('/pr', categoryRoute);//category
+ app.use('/subpr',subcategoryRoute);//subcategory
+ app.use('/br',brandsRoute);
+ app.use('/products',ProductsRoute);
 
 app.get('/', (req, res) => {
   res.send('MY API 99');
