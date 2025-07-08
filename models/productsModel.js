@@ -46,7 +46,19 @@ exports.getProductById = async (id) => {
     .input('id', sql.Int, id)
     .query('SELECT * FROM Products WHERE id = @id');
 };
-
+/*SELECT 
+    p.*,
+    s.id AS subcategory_id,
+    s.Name AS subcategory_name,
+    s.slug AS subcategory_slug,
+    c.name AS category_name
+FROM 
+    [dbo].[Products] p
+JOIN 
+    [dbo].[subcategory] s ON p.subcategory_ID = s.id
+JOIN 
+    [dbo].[category] c ON p.category_ID = c.id;
+*/
 // Update product
 exports.updateProduct = async (id, { title, description, quantity, price, priceAfterDiscount, imageCover, images, colors, category_ID, subcategory_ID, brand_ID }) => {
   const pool = await sql.connect(config);
