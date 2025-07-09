@@ -1,5 +1,5 @@
 // services/productService.js
-
+require('colors');
 const asyncHandler = require('express-async-handler');
 const { insertProduct, getProductById, updateProduct, deleteProduct ,getAllProducts} = require('../models/productsModel');
 const ApiError = require('../utils/apiError');
@@ -46,6 +46,18 @@ exports.deleteProduct = asyncHandler(async (req, res, next) => {
   res.status(204).json({ message: 'Product deleted successfully' });
 });
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
-  const result = await getAllProducts(); // يفترض أن هذه الدالة موجودة في productsModel.js
-  res.status(200).json({ count: result.recordset.length, data: result.recordset });
+  const page=req.query.page || 1;
+  const limit=req.query.limit || 3;
+  const queryStringobj={...req.query};
+  const excludesFilds=['page','limit'];
+  excludesFilds.forEach((field)=>delete queryStringobj[field]);
+  console.log(queryStringobj);
+  console.log(req.query);
+  const result = await getAllProducts(page,limit);
+  let data=result.recordset;
+  data=data.map(prod =>{
+    const {colors,images,ratingsQuantity, ...filtered}=prod;
+    return filtered;
+  });
+  res.status(200).json({ count: data.length, data: data });
 });

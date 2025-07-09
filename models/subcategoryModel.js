@@ -24,6 +24,21 @@ exports.getSubcategoryBYIDM=async(id)=>{
   FROM [Ecommerce].[dbo].[subcategory]s
   join category p on p.id=category_ID where s.id=@id`);
 }
+exports.getSubcatBYIDand_catidM=async(subid,catid)=>{
+    const pool=await sql.connect(config);
+    return await pool.request()
+    .input('catid',sql.Int,catid)
+    .input('subid',sql.Int,subid)
+    .query(`SELECT s.[id]
+        FROM [Ecommerce].[dbo].[subcategory]s
+   where s.id=@subid and s.category_ID=@catid`);
+}
+exports.getSubCatByName=async(name)=>{
+    const pool=await sql.connect(config);
+    return await pool.request().
+    input('name',sql.NVarChar,name)
+    .query('select name from [dbo].[subcategory]s where name=@name ')
+}
 //offset @skip rows fetch next @limit rows only
 exports.getALLSubcategoryM= async (page,limit)=>{
     const pool=await sql.connect(config);

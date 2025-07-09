@@ -13,3 +13,4 @@ exports.putcategoryValidator=[
     .isLength({min:2}).withMessage('Too short category name')
     .isLength({max:20}).withMessage('Too long category name'),validatorMiddleware
 ]
+

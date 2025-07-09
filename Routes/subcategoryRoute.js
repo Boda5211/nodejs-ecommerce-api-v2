@@ -6,7 +6,7 @@ const {postSubcategoryValidator,getSubcategorybyidValidator,getallSubcategoryVal
  //express.Router();
 const router=express.Router({mergeParams:true});
 //postSubcategoryValidator,
-router.route('/').post(createSubcategory);
+router.route('/').post(postSubcategoryValidator,createSubcategory);
 router.route('/:id').delete(getSubcategorybyidValidator,DeleteSubcategory);
 router.route('/:id').get(getSubcategorybyidValidator,getsubprodutBYID).put(putsubprodutValidator,updateSubprodut);
 router.route('/p/:categoryid').get(getALLSubprBYcategoryTID);
