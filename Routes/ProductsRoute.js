@@ -7,7 +7,7 @@ const {
   createProduct,
   getProduct,
   updateProduct,
-  deleteProduct, getAllProducts
+  deleteProduct, getAllProducts,GetAllp
 } = require('../services/ProductsServices');
 
 const {
@@ -21,7 +21,7 @@ const {
 router.route('/')
  .get(getAllProducts)
   .post(createProductValidator, createProduct);
-
+router.route('//').get(GetAllp);
 // عمليات على منتج محدد
 router.route('/:id')
   .get(getProductValidator, getProduct)

@@ -94,7 +94,7 @@ exports.deleteProduct = async (id) => {
     .query('DELETE FROM Products WHERE id = @id');
 };
 
-exports.getAllProducts = async (page,limit) => {
+exports.getAllProducts = async (page,limit,whereStatement,sortStatement) => {
   const skip=((page-1)*limit);
   const pool = await sql.connect(config);
   return await pool.request()
@@ -122,9 +122,10 @@ exports.getAllProducts = async (page,limit) => {
   STUFF((
       SELECT ',' + sub.Name
       FROM STRING_SPLIT(
-              REPLACE(REPLACE(p.Arrayof_Subcategory, '[', ''), ']', ''),
-              ','
-           ) AS splitted
+  REPLACE(REPLACE(ISNULL(p.Arrayof_Subcategory, ''), '[', ''), ']', ''),
+  ','
+)
+ AS splitted
       JOIN subcategory sub 
         ON TRY_CAST(splitted.value AS INT) = sub.id
       FOR XML PATH(''), TYPE
@@ -140,7 +141,23 @@ FROM Products p
 LEFT JOIN Brands b ON b.id = p.brand_ID
 LEFT JOIN subcategory s ON p.subcategory_ID = s.id
 LEFT JOIN category c ON p.category_ID = c.id
-ORDER BY p.id
+${whereStatement}
+ ${sortStatement}
 offset @skip rows fetch next @limit rows only;`);
 };
-//offset @skip rows fetch next @limit rows only
+
+
+exports.getAllp=async(selectFields,page,limit,whereClause,sortClause)=>{
+  const skip=(page-1)*limit;
+  const pool=await sql.connect(config);
+  return pool.request().input('skip',sql.Int,skip)
+  .input('limit',sql.Int,limit)
+  .query(`select ${selectFields} from 
+    Products p
+LEFT JOIN Brands b ON b.id = p.brand_ID
+LEFT JOIN subcategory s ON p.subcategory_ID = s.id
+LEFT JOIN category c ON p.category_ID = c.id
+${whereClause}
+   ${sortClause ? sortClause : 'ORDER BY p.id'}
+offset @skip rows fetch next @limit rows only;`);
+};
