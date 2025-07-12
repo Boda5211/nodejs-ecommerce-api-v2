@@ -3,7 +3,7 @@ const slugify=require('slugify');
 
 //insert category
 
-exports.insertcategory=async(name)=>{
+exports.insertcategory=async({name})=>{
     const pool =await sql.connect(config);
     const slug=slugify(name,{lower:true,strict:true});
     return await pool.request().
@@ -11,6 +11,7 @@ exports.insertcategory=async(name)=>{
     .input('slug',sql.NVarChar,slug)
     .query('insert into category (name,slug) values (@name,@slug)');
 };
+
 //get all category 
 exports.getAllcategory=async function(page,limit){
     const pool =await sql.connect(config);
@@ -39,7 +40,7 @@ exports.searchAcategory = async (keyword) => {
         .query('SELECT * FROM category WHERE name LIKE @keyword');
 };
 //update category 
-exports.Updatecategory=async(id,name)=>{
+exports.Updatecategory=async(id,{name})=>{
     const pool =await sql.connect(config);
     const slug=slugify(name,{lower:true,strict:true});
     const updateResult= await pool.request()
@@ -47,14 +48,15 @@ exports.Updatecategory=async(id,name)=>{
     .input('name',sql.NVarChar,name)
     .input('slug',sql.NVarChar,slug)
     .query('update category set name=@name , slug=@slug where id=@id');
-     if (updateResult.rowsAffected[0] === 0) {
+    return updateResult;
+   /*  if (updateResult.rowsAffected[0] === 0) {
         return null; // مفيش صف اتأثر => مفيش منتج بالـ id ده
     }
     const result=await pool.request().
     input('id',sql.Int,id)
     .query('select * from category where id =@id');
     
-    return result.recordset[0];
+    return result.recordset[0];*/
 }
 //delete category
 exports.Deletecategory=async(id)=>{

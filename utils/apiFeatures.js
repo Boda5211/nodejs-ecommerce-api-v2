@@ -7,8 +7,17 @@ class ApiFeatures {
     this.page = 1;
     this.limit = 5;
     this.skip = 0;
+    this.keyword='';
   }
-
+//search
+// search(modelName){
+// if(this.queryString.keyword){
+//   let query={};
+//   if(modelName==='products'){
+//     query.
+//   }
+// }
+// }
   // 1️⃣ فلترة WHERE
   filter() {
     const query = { ...this.queryString };
@@ -19,7 +28,6 @@ class ApiFeatures {
       const value = query[key];
 
       if (typeof value === 'object' && value !== null) {
-        // أمثلة: price[lte]=1000
         for (const op in value) {
           const sqlOps = {
             gte: '>=',
@@ -29,6 +37,7 @@ class ApiFeatures {
             ne: '<>',
             like: 'LIKE'
           };
+
           const sqlop = sqlOps[op];
           if (!sqlop) continue;
 
@@ -38,13 +47,12 @@ class ApiFeatures {
 
           this.whereConditions.push(`p.${key} ${sqlop} ${val}`);
         }
-
       } else {
-        // أمثلة: category_ID=3
         const val = isNaN(value) ? `'${value}'` : value;
         this.whereConditions.push(`p.${key} = ${val}`);
       }
     }
+
     return this;
   }
 
@@ -57,27 +65,25 @@ class ApiFeatures {
       );
       this.sortFields = fields.join(', ');
     } else {
-      this.sortFields = 'p.id';
+      this.sortFields = 'p.id'; // ترتيب افتراضي
     }
+
     return this;
   }
 
   // 3️⃣ تحديد الحقول
-limitFields() {
-  const fields = this.queryString.fields;
-  if (fields) {
-    const allowed = fields
-      .split(',')
-      .map((f) => `p.${f.trim()}`); // نضيف p. لكل حقل
-    this.fields = allowed.join(',');
-  } else {
-    this.fields = 'p.*'; // default
+  limitFields() {
+    const fields = this.queryString.fields;
+    if (fields) {
+      const allowed = fields.split(',').map(f => `p.${f.trim()}`);
+      this.fields = allowed.join(',');
+    } else {
+      this.fields = 'p.*';
+    }
+    return this;
   }
-  return this;
-}
 
-
-  // 4️⃣ الترقيم (pagination)
+  // 4️⃣ الترقيم
   paginate() {
     this.page = parseInt(this.queryString.page) || 1;
     this.limit = parseInt(this.queryString.limit) || 5;
@@ -90,15 +96,19 @@ limitFields() {
     const whereClause = this.whereConditions.length
       ? `WHERE ${this.whereConditions.join(' AND ')}`
       : '';
+
     const orderByClause = `ORDER BY ${this.sortFields}`;
+
     return {
       whereClause,
       orderByClause,
       selectedFields: this.fields,
       skip: this.skip,
-      limit: this.limit
+      limit: this.limit,
+      page: this.page
     };
   }
 }
 
 module.exports = ApiFeatures;
+ 

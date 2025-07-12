@@ -1,7 +1,7 @@
 const slugify=require('slugify');
 const {sql,config}=require('../config/database');
 
-exports.insertSubcategory=async(name,categoryid)=>{
+exports.insertSubcategory=async({name,categoryid})=>{
 const pool=await sql.connect(config);
 const slug=slugify(name,{lower:true,strict:true});
 return await pool.request()
@@ -72,7 +72,7 @@ exports.getALLSubprBYcategoryIDM= async (page,limit,categoryid)=>{
   where  category_ID=@categoryid  order by s.id
         offset @skip rows fetch next @limit rows only `);
 }
-exports.updateSubcategoryM=async(id,name,categoryid)=>{
+exports.updateSubcategoryM=async(id,{name,categoryid})=>{
     const pool =await sql.connect(config);
     const slug=slugify(name,{lower:true,strict:true})
      return pool.request()

@@ -4,18 +4,22 @@ const asyncHandler = require('express-async-handler');
 const { insertProduct, getProductById, updateProduct, deleteProduct ,getAllProducts,getAllp} = require('../models/productsModel');
 const ApiError = require('../utils/apiError');
 const { query } = require('mssql');
+const hanlerFact=require('./handlersFactory');
 const ApiFeatures=require('../utils/apiFeatures');
 // @desc    Create new product
 // @route   POST /products
-exports.createProduct = asyncHandler(async (req, res, next) => {
+exports.createProduct = hanlerFact.cerateOne(insertProduct);
+/*exports.createProduct = asyncHandler(async (req, res, next) => {
   const data = req.body;
   const result = await insertProduct(data);
   res.status(201).json({ message: 'Product created successfully', data: result.recordset });
-});
+});*/
 
 // @desc    Get product by ID
 // @route   GET /products/:id
-exports.getProduct = asyncHandler(async (req, res, next) => {
+
+exports.getProduct = hanlerFact.GetOneById(getProductById);
+/* asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const result = await getProductById(id);
   if (result.recordset.length === 0) {
@@ -23,9 +27,10 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
   }
   res.status(200).json(result.recordset[0]);
 });
-
+*/
 // @desc    Update product by ID
 // @route   PUT /products/:id
+/*
 exports.updateProduct = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const data = req.body;
@@ -35,18 +40,20 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
   }
   res.status(200).json({ message: 'Product updated successfully' });
 });
-
+*/
+exports.updateProduct =hanlerFact.updateOne(updateProduct);
 // @desc    Delete product by ID
 // @route   DELETE /products/:id
 
-exports.deleteProduct = asyncHandler(async (req, res, next) => {
+exports.deleteProduct =hanlerFact.deleteOne(deleteProduct);
+/* asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const result = await deleteProduct(id);
   if (result.rowsAffected[0] === 0) {
     return next(new ApiError(`No product deleted with id ${id}`, 404));
   }
   res.status(204).json({ message: 'Product deleted successfully' });
-});
+});*/
 /*
 exports.getAllProducts = asyncHandler(async (req, res, next) => {
   const page=req.query.page || 1;
@@ -205,14 +212,14 @@ if(sortQuery){
   });
 });
 
-
+/*
 exports.GetAllp=asyncHandler(async(req,res,next)=>{
   const features=new ApiFeatures(req.query).
   filter().sort().limitFields().paginate();
   const {
-    whereClause,orderByClause,selectedFields,skip,limit
+    whereClause,orderByClause,selectedFields,page,limit
   }=features;
-  const result=await getAllp(selectedFields,skip,limit
+  const result=await getAllp(selectedFields,page,limit
     ,whereClause,orderByClause
   );
 const data=result.recordset.map((prod)=>{
@@ -220,4 +227,38 @@ const data=result.recordset.map((prod)=>{
   return filtered;
 });
 res.status(200).json({count:data.length,page:features.page,data});
+});*/
+exports.GetAllp = asyncHandler(async (req, res, next) => {
+  const features = new ApiFeatures(req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const {
+    whereClause,
+    orderByClause,
+    selectedFields,
+    page,
+    limit
+  } = features;
+
+  const result = await getAllp(
+    selectedFields,
+    page,
+    limit,
+    whereClause,
+    orderByClause
+  );
+
+  const data = result.recordset.map((prod) => {
+    const { colors, images, ...filtered } = prod;
+    return filtered;
+  });
+
+  res.status(200).json({
+    count: data.length,
+    page,
+    data
+  });
 });
