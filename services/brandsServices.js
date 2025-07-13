@@ -8,33 +8,15 @@ const {
   insertbrands,
   getAllbrands,
   getbrandsByID,
-  searchAbrands,Updatebrands,Deletebrands
+  searchAbrands,Updatebrands,Deletebrands,getlastADdbrands
 } = require('../models/brandsModel');
-// //1-DiskStorage engine
-// const multerStorage=multer.diskStorage({
-// destination:function(req,file,cb){
-//     cb(null,'uploads/brands');
-// },
-// filename:function(req,file,cb){
-//     //brand-id-Date.now().jpeg
-//     const ext=file.mimetype.split('/')[1];
-//     const filename=`brand-${uuidv4()}-${Date.now()}.${ext}`;
-//     cb(null,filename);
-// },
-//});
-//2-Memory Storage engine
-const multerStorage=multer.memoryStorage();
+const {uploadSingleImage}=require('../middlewares/uploadImageMiddleware');
 
-const multerFilter=function(req,file,cb){
-    if(file.mimetype.startsWith('image')){
-        cb(null,true);
-    }else{
-        cb(new ApiError(`only images allowed`,400),false);
-    }
-}
-const upload=multer({storage:multerStorage,fileFilter:multerFilter});
-exports.uploadBrandImg=upload.single('img');
+exports.uploadBrandImg=uploadSingleImage('image')
 exports.resizeImag=asyncHandler(async(req,res,next)=>{
+    if(!req.file || !req.file.buffer){
+        return next();
+    }
 const filename=`brand-${uuidv4()}-${Date.now()}.jpeg`;
 await sharp(req.file.buffer)
 .resize(500,500)
@@ -44,6 +26,9 @@ await sharp(req.file.buffer)
 req.body.image=filename;
 next();
 });
+//
+exports.getlastid=hanlerFact.getAll(getlastADdbrands);
+//
 // @route post /
 // @access public
 exports.savebrands=hanlerFact.cerateOne(insertbrands);

@@ -10,7 +10,7 @@ const {
   GetbrandsBYID,
   searchAboutbrands,
   updatebrands,
-  deletebrands,uploadBrandImg,resizeImag
+  deletebrands,uploadBrandImg,resizeImag,getlastid
 } = require('../services/brandsServices');
 
 const router = express.Router();
@@ -20,6 +20,7 @@ const router = express.Router();
     next();
   },*/
 // 🟢 أولًا: المسارات الثابتة
+//getlastid
 router.route('/')
   .post(uploadBrandImg,resizeImag,savebrands)
   .get(GetAllbrands);

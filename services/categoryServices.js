@@ -1,8 +1,9 @@
 const asyncHandler=require(`express-async-handler`);
 const hanlerFact=require('./handlersFactory');
 const ApiError=require('../utils/apiError');
-//const {sql , config}=require(`../config/database`);
-//const {insertcategory,getAllcategory,getcategoryByID,searchAcategory}=require('../Models/categoryModel');
+const {uploadSingleImage}=require('../middlewares/uploadImageMiddleware');
+const {v4:uuidv4}=require('uuid');
+const sharp=require('sharp');
 const {
   insertcategory,
   getAllcategory,
@@ -20,6 +21,20 @@ const {
    await insertcategory(name);
    res.status(201).json({message:'✔️ تمت الإضافة بنجاح'});
 });*/
+exports.uploadCategoryImg=uploadSingleImage('image');
+exports.resizeImag=asyncHandler(async(req,res,next)=>{
+    if(!req.file || !req.file.buffer){
+        return next();
+    }
+    const filename=`category-${uuidv4()}-${Date.now()}.jpeg`;
+    await sharp(req.file.buffer)
+    .resize(400,400)
+    .toFormat('jpeg')
+    .jpeg({quality:90})
+    .toFile(`uploads/category/${filename}`);
+    req.body.image=filename;
+    next();
+})
 exports.savecategory=hanlerFact.cerateOne(insertcategory);
 exports.GetAllcategory=hanlerFact.getAll(getAllcategory);
 /*asyncHandler(async(req,res)=>{

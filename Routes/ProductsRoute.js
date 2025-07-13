@@ -7,7 +7,7 @@ const {
   createProduct,
   getProduct,
   updateProduct,
-  deleteProduct, getAllProducts,GetAllp
+  deleteProduct, getAllProducts,GetAllp,uploadproductImg,resizeProductImages
 } = require('../services/ProductsServices');
 
 const {
@@ -20,12 +20,12 @@ const {
 // عرض كل المنتجات
 router.route('/')
  .get(getAllProducts)
-  .post(createProductValidator, createProduct);
+  .post(uploadproductImg,resizeProductImages,createProductValidator, createProduct);
 router.route('//').get(GetAllp);
 // عمليات على منتج محدد
 router.route('/:id')
   .get(getProductValidator, getProduct)
-  .put(updateProductValidator, updateProduct)
+  .put(uploadproductImg,resizeProductImages,updateProductValidator, updateProduct)
   .delete(deleteProductValidator, deleteProduct);
 
 module.exports = router;

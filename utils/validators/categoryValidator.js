@@ -8,7 +8,7 @@ validatorMiddleware
 ]
 exports.putcategoryValidator=[
     check('id').isInt().withMessage('id undefined'),
-    body('name').notEmpty()
+    body('name').notEmpty().optional()
     .withMessage('name must by not empty')
     .isLength({min:2}).withMessage('Too short category name')
     .isLength({max:20}).withMessage('Too long category name'),validatorMiddleware

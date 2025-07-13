@@ -35,7 +35,13 @@ const result=await insertFn(data);
 
     if(!result ||!result.rowsAffected ||result.rowsAffected[0]===0 )
             return res.status(404).json({error:`No record Affected`});
-    res.status(201).json({message:`Record Created successfully`}); 
+
+    const lastone=result.recordset?.[0]||null;
+    const response={message:`Record Created successfully`,};
+    if(lastone){
+        response.record=lastone;
+    }
+    res.status(201).json({response}); 
 });
 
 exports.GetOneById=(GetOneByIdFn)=>asyncHandler(async(req,res,next)=>{
@@ -55,3 +61,4 @@ exports.getAll=(GetAllFn)=>asyncHandler(async(req,res)=>{
     const result =await GetAllFn(page,limit,req.query);
     res.status(200).json({page,limit,count:result.recordset.length,data:result.recordset});
 });
+

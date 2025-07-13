@@ -109,7 +109,7 @@ exports.updateProductValidator = [
   body('price')
     .optional()
     .isNumeric().withMessage('Price must be a number'),
-    body('category_ID')
+    body('category_ID').optional()
     .notEmpty().withMessage('Category ID is required')
     .isInt().withMessage('Category ID must be a number').custom(async(value)=>{
        const result=await getcategoryByID(value);
