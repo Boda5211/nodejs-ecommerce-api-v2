@@ -1,5 +1,5 @@
 const { body ,param,query} = require('express-validator');
-const validatorMiddleware = require('../../middlewares/validatorMiddleware'); // ✅ لاحظ الاسم
+const {validatorMiddleware} = require('../../middlewares/validatorMiddleware'); // ✅ لاحظ الاسم
 const{getcategoryByID}=require('../../models/categoryModel');
 const{getSubCatByName}=require('../../models/subcategoryModel');
 exports.postSubcategoryValidator = [

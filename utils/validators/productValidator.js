@@ -1,7 +1,7 @@
 // utils/validators/productValidator.js
 
 const { body, param } = require('express-validator');
-const validatorMiddleware = require('../../middlewares/validatorMiddleware');
+const {validatorMiddleware} = require('../../middlewares/validatorMiddleware');
 const{getcategoryByID}=require('../../models/categoryModel');
 const{getSubcategoryBYIDM,getSubcatBYIDand_catidM}=require('../../models/subcategoryModel');
 const{getbrandsByID}=require('../../models/brandsModel');

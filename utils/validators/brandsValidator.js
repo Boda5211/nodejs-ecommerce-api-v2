@@ -1,5 +1,5 @@
 const {param,check,body}=require('express-validator');
-const validatorMiddleware=require('../../middlewares/validatorMiddleware')
+const {validatorMiddleware}=require('../../middlewares/validatorMiddleware')
 
 
 exports.getbrandsValidator=[
