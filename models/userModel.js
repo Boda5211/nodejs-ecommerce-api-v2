@@ -54,6 +54,15 @@ exports.CheckUnickEmailonupdate = async (email,id) => {
     .query('SELECT email FROM users WHERE email = @email And id!=@id');
   return result.recordset[0];
 };
+//currpassword,password = @password And
+exports.CheckcurrentPass = async (id) => {
+  const pool = await sql.connect(config);
+  const result = await pool.request()
+  .input('id', sql.Int, id)
+   // .input('password', sql.NVarChar, currpassword)
+    .query('SELECT password FROM users WHERE  id=@id');
+  return result.recordset[0];
+};
 exports.searchUsersByName = async (keyword) => {
   const pool = await sql.connect(config);
   return await pool.request()
@@ -69,24 +78,24 @@ exports.updateUser = async (id, { name, email, password, phone ,role,active}) =>
     const slug = slugify(name, { lower: true, strict: true });
     request.input('slug', sql.NVarChar, slug);
   }
- if (email) request.input('email', sql.NVarChar, email);
+ /*if (email) request.input('email', sql.NVarChar, email);
   if (password) {
     const hashed=await bcrypt.hash(password,12);
     request.input('password', sql.NVarChar, hashed);
-  }
+  }*/
     if (phone) request.input('phone', sql.NVarChar, phone);
   if(role) request.input('role',sql.NVarChar,role);
   if(active) request.input('active',sql.Boolean,active);
   const updateFields = [
     name ? 'name = ISNULL(@name, name), slug = ISNULL(@slug, slug)' : '',
-    email ? 'email = ISNULL(@email, email)' : '',
-    password ? 'password = ISNULL(@password, password)' : '',
+   // email ? 'email = ISNULL(@email, email)' : '',
+    //password ? 'password = ISNULL(@password, password)' : '',
     phone ? 'phone = ISNULL(@phone, phone)' : '',
     role ?'role =isnull(@role,role)':'',
     active ? 'active =isnull(@active,active)' :''
   ].filter(Boolean).join(', ');
 
-  const query = `UPDATE users SET ${updateFields} WHERE id = @id`;
+  const query = `UPDATE users SET ${updateFields} ,[ubdatedate]=getdate() WHERE id = @id`;
 
   return await request.query(query);
 };
@@ -100,7 +109,9 @@ exports.changepass=async(id,{password})=>{
     request.input('password', sql.NVarChar, hashed);
   }
     const updateResult= await request
-    .query('UPDATE users SET password = ISNULL(@password, password) where id=@id');
+    .input('passwordChangedAt', new Date())
+    .query(`UPDATE users SET password = ISNULL(@password, password), 
+      passwordChangedAt = @passwordChangedAt ,[ubdatedate]=getdate() where id=@id`);
     
     return updateResult;
 }

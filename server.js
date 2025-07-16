@@ -9,6 +9,7 @@ const subcategoryRoute=require('./Routes/subcategoryRoute');
 const brandsRoute=require('./Routes/brandsRoute');
 const ProductsRoute=require('./Routes/ProductsRoute');
 const userRoute=require('./Routes/userRoute');
+const authRoute=require('./Routes/authRoute');
 const ApiError=require('./utils/apiError');
 const globalError=require('./middlewares/ErrorMiddleware');
 
@@ -25,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
  app.use('/br',brandsRoute);
  app.use('/products',ProductsRoute);
  app.use('/us',userRoute);
+ app.use('/auth',authRoute);
 
 app.get('/', (req, res) => {
   res.send('MY API 99');

@@ -11,13 +11,15 @@ const {
   updatecategory,
   deletecategory,resizeImag,uploadCategoryImg
 } = require('../services/categoryServices');
-
+const Authion=require('../services/authService');
 const router = express.Router();
 
 router.use('/:categoryid/subprod',subcategoryRouter);
 // 🟢 أولًا: المسارات الثابتة
 router.route('/')
-  .post(uploadCategoryImg,resizeImag,savecategory)
+  .post(Authion.protect,
+    Authion.allowedTo('admin'),
+    uploadCategoryImg,resizeImag,savecategory)
   .get(GetAllcategory);
 
 router.get('/search', searchAboutcategory); // 🟢 قبل :id
@@ -25,6 +27,8 @@ router.get('/search', searchAboutcategory); // 🟢 قبل :id
 // 🔵 ثانيًا: المسارات المعتمدة على ID
 router.route('/:id')
     .get(getcategoryValidator,GetcategoryBYID)
-  .put(uploadCategoryImg,resizeImag,putcategoryValidator,updatecategory)
-  .delete(deletecategory);
+  .put(Authion.protect,
+    Authion.allowedTo('admin'),uploadCategoryImg,resizeImag,putcategoryValidator,updatecategory)
+  .delete(Authion.protect,
+    Authion.allowedTo('admin'),deletecategory);
 module.exports = router;
