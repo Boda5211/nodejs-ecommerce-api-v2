@@ -62,3 +62,9 @@ exports.loginValidator=[
   ,
   validatorMiddleware
 ]
+exports.checknewpassword=[
+  body('newPassword').notEmpty().withMessage('New Password is required')
+  .isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+  ,
+  validatorMiddleware
+]

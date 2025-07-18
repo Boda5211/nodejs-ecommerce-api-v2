@@ -32,12 +32,19 @@ const bcrypt=require('bcryptjs');
             OFFSET @skip ROWS FETCH NEXT @limit ROWS ONLY`);
   return { recordset: result.recordset };
 };
-exports.getUserById = async (id) => {
+exports.getUserByIdREcord = async (id) => {
   const pool = await sql.connect(config);
   const result = await pool.request()
     .input('id', sql.Int, id)
     .query('SELECT * FROM users WHERE id = @id');
   return result.recordset[0];
+};
+exports.getUserById = async (id) => {
+  const pool = await sql.connect(config);
+  const result = await pool.request()
+    .input('id', sql.Int, id)
+    .query('SELECT * FROM users WHERE id = @id');
+  return result;
 };
 exports.CheckUnickEmail = async (email) => {
   const pool = await sql.connect(config);

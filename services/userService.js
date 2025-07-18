@@ -22,3 +22,12 @@ exports.searchUsers = async (req, res, next) => {
     data: result.recordset,
   });
 };
+
+exports.getlogUserData=asyncHandler(async(req,res,next)=>{
+  console.log(req.params.id,'1');
+  console.log(req.user.id,'2');
+  req.params.id=req.user.id;
+  console.log(req.params.id);
+  console.log(req.user.id);
+  next();
+})

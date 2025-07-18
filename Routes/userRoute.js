@@ -7,7 +7,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
-  searchUsers,changePass
+  searchUsers,changePass,getlogUserData
 } = require('../services/userService');
 const Authion=require('../services/authService');
 
@@ -15,12 +15,13 @@ const { getUserValidator, createUserValidator, updateUserValidator ,changepassVa
 
 const router = express.Router();
 router.route('/')
-  .post(
-    Authion.protect,
-    Authion.allowedTo('admin'),createUserValidator,RoleMiddleware ,createUser)
+.post(
+  Authion.protect,
+  Authion.allowedTo('admin'),createUserValidator,RoleMiddleware ,createUser)
   .get(Authion.protect,
     Authion.allowedTo('admin'),getAllUsers);
-
+    
+    router.get('/getme',Authion.protect,getlogUserData,getUserById);
   router.route('/ch/:id').put(Authion.protect,changepassValidator,changePass);
 router.route('/:id')
   .get(getUserValidator, getUserById)

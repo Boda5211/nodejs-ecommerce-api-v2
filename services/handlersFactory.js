@@ -46,12 +46,15 @@ const result=await insertFn(data);
 
 exports.GetOneById=(GetOneByIdFn)=>asyncHandler(async(req,res,next)=>{
     const id=req.params.id;
+    console.log(id);
     if(isNaN(id)||!id){
        return next(new ApiError(`id ${id} not found`,400));
     }
+    console.log(id,'ll');
     const result=await GetOneByIdFn(id);
-     if(!result.recordset ||result.recordset.length === 0 )
-         return res.status(404).json({error:'المنتج غير موجود'});
+    console.log(result,'ll');
+    if(!result.recordset ||result.recordset.length === 0 )
+        return res.status(404).json({error:'المنتج غير موجود'});
     res.status(200).json(result.recordset[0]);
 });
 exports.getAll=(GetAllFn)=>asyncHandler(async(req,res)=>{

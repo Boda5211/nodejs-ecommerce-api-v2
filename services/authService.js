@@ -2,9 +2,12 @@ const asyncHandler=require('express-async-handler');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const ApiError=require('../utils/apiError');
-const{insertUserTosinup,finduserByEmail}=require('../models/authModel');
-const{getUserById}=require('../models/userModel');
+const{insertUserTosinup,finduserByEmail,updateAfterResetCode,
+    verifyResetCode,setResetCodeFeald,changepassAfterRc,checkVerifyByemail,
+    setResetCode}=require('../models/authModel');
+const{getUserById,getUserByIdREcord}=require('../models/userModel');
 const crypto=require('crypto');
+const sendEmail=require('../utils/sendEmail');
 exports.sinUP=asyncHandler(async(req,res)=>{
     const data={...req.body};
     if(!data || Object.keys(data).length ===0){
@@ -69,7 +72,7 @@ exports.protect=asyncHandler(async(req,res,next)=>{
  const decoded=jwt.verify(token,process.env.JWT_SECRET_KEY);
  console.log(decoded);
  //check if user exisits
- const currentUser=await getUserById(decoded.userid);
+ const currentUser=await getUserByIdREcord(decoded.userid);
  if(!currentUser){
     return next(new ApiError(`The user that belong to this token does no longer exist`,401));
  }
@@ -102,17 +105,66 @@ exports.allowedTo=(...roles)=>
 });
 
 exports.forgetPassword=asyncHandler(async(req,res,next)=>{
+    const email=req.body.email;
     //1) Get user by email
-    const user=await finduserByEmail(req.body.email);
+    const user=await finduserByEmail(email);
     if(!user){
-            return next(new ApiError(`There is no user with that email ${req.body.email}`,404));
+            return next(new ApiError(`There is no user with that email ${email}`,404));
 
     }
     //2)if user exist,Generate reset random 6 digits and save in in db
-    const resetCode=Math.floor(100000+Math.random()*900000).toString();
-    const HashedResecode=crypto.createHash('sha256').
-    update(resetCode).digest('hex');
-    const expires=new Date(Date.now()+10*60*1000);
-   // await 
-    //3) send the reset code via email
+
+    const resetCode= await setResetCode(email);
+    // console.log(resetCode);
+    // console.log(user.name);
+    const message=`Hi ${user.name} \n We received a request to reset the password on your E-shop Account . 
+    \n Enter this code to complete the reset. ${resetCode}\n `;
+    // 3) send the reset code via email
+   try{
+
+       await sendEmail({
+           email:user.email,
+           subject:'your password reset code (valid for 10 min)',
+           message,
+        })
+    }catch(err){
+        await setResetCodeFeald(email);
+        return next(new ApiError(`There is an error in sending email`,500));
+    }
+     res.status(200).json({ status: 'success',
+    message: 'Reset code sent to email (console for now) and email',resetCode});
+
+});
+
+exports.VerifyResetC=asyncHandler(async(req,res,next)=>{
+    const {resetCode}=req.body;
+    if(!resetCode){
+        return next(new ApiError('Reset code is required', 400));
+    }
+    const result=await verifyResetCode(resetCode);
+    if(!result){
+        return next(new ApiError(`Reset code invalid or expired`),403);
+    }
+    console.log(result.id);
+    const updated=await updateAfterResetCode(result.id);
+     if (!updated) {
+    return next(new ApiError('Failed to mark reset code as verified', 500));
+  }
+    res.status(200).json({status:'Success'});
+});
+exports.resetPassword=asyncHandler(async(req,res,next)=>{
+    //1)get user based on email
+    const user =await checkVerifyByemail(req.body.email);
+    if(!user){
+        return next(new ApiError(`There is no user with email`,404));
+    }
+    //2) check if reset code verified
+    if(!user.passwordResetVerified){
+        return next(new ApiError(`Reset code not verified`,400));
+    }
+    const newpass=req.body.newPassword;
+    await changepassAfterRc(user.id,newpass);
+    const token =Rtoken(user.id);
+    res.status(200).json({token});
+
 })
