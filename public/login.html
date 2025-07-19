@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - متجري</title>
+    <style>
+        /* CSS Variables for theme consistency */
+        :root {
+            --primary-color: #2a9d8f;
+            --background-color: #f4f4f4;
+            --text-color: #264653;
+            --white-color: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+            --input-border-color: #ddd;
+        }
+
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            /* Center the form container */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .auth-container {
+            background-color: var(--white-color);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px; /* Max width for the form */
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .auth-container h2 {
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: right; /* Align labels to the right */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .btn:hover {
+            background-color: #21867a;
+        }
+        
+        .switch-auth {
+            margin-top: 1.5rem;
+        }
+
+        .switch-auth a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .switch-auth a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @media(max-width: 480px) {
+            .auth-container {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+    </style>
+    <!-- Google Fonts (Cairo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="auth-container">
+        <a href="/" class="logo">متجري</a>
+        <h2>تسجيل الدخول</h2>
+        <form >
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" class="form-control" required>
+            </div>
+            <button type="button" onclick="login()" class="btn">تسجيل الدخول</button>
+        </form>
+        <p class="switch-auth">
+            ليس لديك حساب؟ <a href="signup.html">سجل الآن</a>
+        </p>
+    </div>
+<script>
+    const baseURL='http://localhost:9000';
+    async function login(){  
+    const email=document.getElementById('email').value.trim();
+    const password=document.getElementById('password').value.trim();
+    if(!password || !email){
+        return alert(`fill all login fields`);
+    }
+    try{
+
+        const res=await fetch(`${baseURL}/auth/login`,
+        {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({email,password})
+        }
+    );
+    const data=await res.json();
+    console.log(data);
+     const token = data.token || (data.response && data.response.token);
+    console.log(data.token,token);
+    if(res.ok && token){
+        alert("login successful");
+        console.log(data.token);
+        localStorage.setItem('authToken',data.token);
+        window.location.href='home.html';
+    }else {
+      alert(data.message || "❌ Login failed");
+    }
+  } catch (err) {
+    alert("❌ Server error during login");
+    console.error("Login error:", err);
+  }
+  }
+</script>
+</body>
+</html>

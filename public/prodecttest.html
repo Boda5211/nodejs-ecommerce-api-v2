@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المنتجات - متجري</title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: scale(1.03);
+    }
+
+    .product-image {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: crimson;
+      color: white;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      border-radius: 4px;
+    }
+
+    .product-info {
+      padding: 15px;
+      text-align: right;
+    }
+
+    .product-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #2a9d8f;
+    }
+
+    .product-price {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .price-old {
+      text-decoration: line-through;
+      color: #999;
+      margin-right: 10px;
+    }
+
+    .add-to-cart-btn {
+      background-color: #2a9d8f;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      width: 100%;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .add-to-cart-btn:hover {
+      background-color: #21867a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>المنتجات المتوفرة</h1>
+  <main class="product-grid" id="productGrid">
+    <!-- المنتجات هتظهر هنا -->
+     
+  </main>
+<div id="pagination" style="text-align: center; margin-top: 30px;"></div>
+<script>
+const baseURL = "http://localhost:9000";
+const container = document.querySelector('.product-grid');
+const paginationContainer = document.getElementById('pagination');
+let currentPage = 1;
+let totalPages = 1;
+const limit = 3;
+
+async function loadProducts(page = 1) {
+  try {
+   // const response = await fetch(`${baseURL}/products?page=${page}&limit=${limit}`);
+    const response = await fetch(`${baseURL}/products?page=${page}&limit=${limit}`);
+
+    const result = await response.json();
+
+    if (!result.data || !Array.isArray(result.data)) {
+      container.innerHTML = "<p>لا توجد منتجات متاحة.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+
+    result.data.forEach(product => {
+      const priceHTML = product.priceAfterDiscount
+        ? `<p class="product-price">${product.priceAfterDiscount} ر.س <span class="price-old">${product.price} ر.س</span></p>`
+        : `<p class="product-price">${product.price} ر.س</p>`;
+
+      const productCard = `
+        <div class="product-card">
+          <div class="product-image">
+            <img src="${product.imageCover}" alt="${product.title}" />
+            ${product.priceAfterDiscount ? '<span class="sale-badge">خصم!</span>' : ''}
+          </div>
+          <div class="product-info">
+            <h3 class="product-name">${product.title}</h3>
+            ${priceHTML}
+            <button class="add-to-cart-btn">أضف إلى السلة</button>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML += productCard;
+    });
+
+    totalPages = Math.ceil(result.count / limit);
+    renderPagination();
+
+  } catch (error) {
+    console.error("❌ فشل تحميل المنتجات:", error);
+    container.innerHTML = "<p>⚠ حدث خطأ أثناء تحميل المنتجات.</p>";
+  }
+}
+
+function renderPagination() {
+  paginationContainer.innerHTML = "";
+
+  if (currentPage > 1) {
+    paginationContainer.innerHTML += `<button onclick="goToPage(${currentPage - 1})">السابق</button>`;
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    paginationContainer.innerHTML += `
+      <button onclick="goToPage(${i})" ${i === currentPage ? 'style="font-weight:bold;color:#2a9d8f"' : ''}>${i}</button>
+    `;
+  }
+
+  if (currentPage < totalPages) {
+    paginationContainer.innerHTML += `<button onclick="goToPage(${currentPage + 1})">التالي</button>`;
+  }
+}
+
+function goToPage(page) {
+  currentPage = page;
+  loadProducts(page);
+}
+
+window.onload = () => {
+  loadProducts(currentPage);
+};
+</script>
+
+
+</body>
+</html>
