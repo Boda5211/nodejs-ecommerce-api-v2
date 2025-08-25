@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر حديث</title>
+    <style>
+        /* CSS Variables for easy theme management */
+        :root {
+            --primary-color: #2a9d8f;      /* لون أساسي (أخضر مائل للأزرق) */
+            --secondary-color: #e9c46a;    /* لون ثانوي (أصفر ذهبي) */
+            --background-color: #f4f4f4;   /* لون الخلفية */
+            --text-color: #264653;         /* لون النصوص الرئيسي */
+            --white-color: #ffffff;        /* اللون الأبيض */
+            --dark-color: #212529;         /* لون داكن للفوتر */
+            --light-gray: #f8f9fa;         /* رمادي فاتح للخلفيات */
+            --shadow: 0 4px 8px rgba(0,0,0,0.1); /* تأثير الظل */
+        }
+
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif; /* خط عربي جميل */
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .main-header {
+            background-color: var(--white-color);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky; /* تثبيت الشريط العلوي عند التمرير */
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+
+        .main-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .main-nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .main-nav ul li {
+            margin-right: 25px;
+        }
+
+        .main-nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .main-nav ul li a:hover,
+        .main-nav ul li a.active {
+            color: var(--primary-color);
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        /* Hero Slider Styles */
+        .hero-slider {
+            background: url('https://via.placeholder.com/1920x700/2a9d8f/ffffff?text=Great+Offer!') center center/cover no-repeat;
+            height: 70vh; /* ارتفاع بنسبة 70% من الشاشة */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white-color);
+            position: relative;
+        }
+        
+        /* Overlay for better text readability */
+        .hero-slider::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            z-index: 1; /* لجعل المحتوى فوق الـ overlay */
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #21867a; /* لون أغمق عند التمرير */
+            transform: translateY(-2px);
+        }
+
+        /* Section Title Styles */
+        .section-title {
+            text-align: center;
+            margin: 4rem 0 2rem;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        /* Featured Products Styles */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* شبكة مرنة */
+            gap: 2rem;
+        }
+
+        .product-card {
+            background-color: var(--white-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover; /* للحفاظ على أبعاد الصورة */
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .add-to-cart-btn {
+            background-color: var(--secondary-color);
+            color: var(--dark-color);
+        }
+        .add-to-cart-btn:hover {
+            background-color: #d4b35a;
+        }
+
+
+        /* Deals Section Styles */
+        .deals-section {
+            background-color: var(--light-gray);
+            padding: 4rem 0;
+            margin-top: 4rem;
+        }
+
+        .deals-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            flex-wrap: wrap; /* للسماح بالالتفاف على الشاشات الصغيرة */
+            gap: 2rem;
+        }
+
+        .deals-text {
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .deals-text h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .deals-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .deals-img img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+
+        /* Footer Styles */
+        .main-footer {
+            background-color: var(--dark-color);
+            color: var(--white-color);
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .social-links {
+            list-style: none;
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links li {
+            margin: 0 15px;
+        }
+
+        .social-links a {
+            color: var(--white-color);
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Responsive Design using Media Queries */
+        @media (max-width: 768px) {
+            .main-header .container {
+                flex-direction: column;
+            }
+
+            .main-nav ul {
+                margin-top: 1rem;
+                padding: 0;
+            }
+            .main-nav ul li {
+                margin: 0 10px;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .deals-content {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+    <!-- Font Awesome for Icons (Cart, Social Media) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ==================== Header (الشريط العلوي) ==================== -->
+    <header class="main-header">
+        <div class="container">
+            <a href="#" class="logo">متجري</a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#" class="active">الرئيسية</a></li>
+                    <li><a href="prodecttest.html">المتجر</a></li>
+                    <li><a href="#">من نحن</a></li>
+                    <li><a href="#">تواصل معنا</a></li>
+                </ul>
+            </nav>
+            <a href="#" class="cart-icon" aria-label="Shopping Cart"><i class="fas fa-shopping-cart"></i></a>
+        </div>
+    </header>
+
+    <main>
+        <!-- ==================== Hero Slider (السلايدر الرئيسي) ==================== -->
+        <section class="hero-slider">
+            <div class="hero-content">
+                <h1>أفضل تشكيلة لعام 2025</h1>
+                <p>منتجات عصرية بأفضل الأسعار. تسوق الآن واحصل على خصم 30%</p>
+                <a href="/products.html" class="btn">تسوق الآن</a>
+            </div>
+        </section>
+
+        <!-- ==================== Featured Products (المنتجات المميزة) ==================== -->
+        <section class="featured-products">
+            <div class="container">
+                <h2 class="section-title">منتجاتنا المميزة</h2>
+                <div class="products-grid">
+                    <!-- Product Card 1 -->
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/300x200/e9c46a/264653?text=Product+1" alt="Product 1">
+                        <div class="product-info">
+                            <h3>منتج أنيق</h3>
+                            <p class="product-price">150.00 ر.س</p>
+                            <button class="btn add-to-cart-btn">أضف للسلة</button>
+                        </div>
+                    </div>
+                    <!-- Product Card 2 -->
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/300x200/f4a261/264653?text=Product+2" alt="Product 2">
+                        <div class="product-info">
+                            <h3>منتج عصري</h3>
+                            <p class="product-price">220.00 ر.س</p>
+                            <button class="btn add-to-cart-btn">أضف للسلة</button>
+                        </div>
+                    </div>
+                    <!-- Product Card 3 -->
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/300x200/e76f51/ffffff?text=Product+3" alt="Product 3">
+                        <div class="product-info">
+                            <h3>منتج فريد</h3>
+                            <p class="product-price">185.00 ر.س</p>
+                            <button class="btn add-to-cart-btn">أضف للسلة</button>
+                        </div>
+                    </div>
+                    <!-- Product Card 4 -->
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/300x200/2a9d8f/ffffff?text=Product+4" alt="Product 4">
+                        <div class="product-info">
+                            <h3>منتج محدود</h3>
+                            <p class="product-price">300.00 ر.س</p>
+                            <button class="btn add-to-cart-btn">أضف للسلة</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== Deals Section (قسم العروض) ==================== -->
+        <section class="deals-section">
+            <div class="container">
+                <div class="deals-content">
+                    <div class="deals-text">
+                        <h2>عروض نهاية الأسبوع</h2>
+                        <p>لا تفوت فرصة الحصول على خصومات تصل إلى 50% على منتجات مختارة. العرض سارٍ حتى نفاذ الكمية.</p>
+                        <a href="#" class="btn">مشاهدة العروض</a>
+                    </div>
+                    <div class="deals-img">
+                        <img src="https://via.placeholder.com/500x350/264653/ffffff?text=Special+Offer" alt="Special Deals">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== Footer (الفوتر) ==================== -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <ul class="social-links">
+                    <li><a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a></li>
+                </ul>
+                <div class="contact-info">
+                    <p><strong>للتواصل:</strong> example@email.com</p>
+                    <p><strong>الهاتف:</strong> +966 12 345 6789</p>
+                </div>
+                <div class="copyright">
+                    <p>© 2025 متجري. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

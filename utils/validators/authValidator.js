@@ -43,7 +43,7 @@ exports.createAuthValidator = [
 exports.loginValidator=[
   body('email')
     .notEmpty().withMessage('Email is required')
-    .isEmail().withMessage('Invalid email format')
+    .isEmail().withMessage('Invalid email format'),
     // .custom(async(value)=>{
     //     //const ema=req.body.email;//,{req}.length>0
     //     const result=await CheckUnickEmail(value);
@@ -51,8 +51,8 @@ exports.loginValidator=[
     //         throw new Error(`${value} is already in ues`);
     //     }
     //     return true;
-    // })
-  , check('password')
+    // }),
+   check('password')
     .notEmpty().withMessage('Password is required')
     .isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
     // .custom((pass,{req})=>{

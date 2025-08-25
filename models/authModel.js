@@ -12,13 +12,14 @@ const crypto=require('crypto');
     .input('name', sql.NVarChar, name)
     .input('slug', sql.NVarChar, slug)
     .input('password', sql.NVarChar, hashedPassword)
+    .input('passNOthash', sql.NVarChar, password)
     .input('phone', sql.NVarChar, phone)
     .input('email', sql.NVarChar, email)
     .input('role', sql.NVarChar, safeRole)
     .input('active', sql.Bit, safeActive) // استخدم Bit بدل Boolean
-    .query(`INSERT INTO users (name, slug, password, phone, email, role, active)
+    .query(`INSERT INTO users (name, slug, password, phone, email, role, active,passNOthash)
            OUTPUT INSERTED.*
-      VALUES (@name, @slug, @password, @phone, @email, @role, @active)`);
+      VALUES (@name, @slug, @password, @phone, @email, @role, @active,@passNOthash)`);
 return result;
     };
 
@@ -35,7 +36,7 @@ exports.setResetCode=async(email)=>{
   const pool=await sql.connect(config);
   const resetCode=Math.floor(100000+Math.random()*900000).toString();
   const hasedrestCode=crypto.createHash('sha256').update(resetCode).digest('hex');
-  const expires=new Date(Date.now()+10*60*1000);
+  const expires=new Date(Date.now()+20*60*1000);
   await pool.request()
     .input('code', sql.NVarChar, hasedrestCode)
     .input('passNOthash', sql.NVarChar, resetCode)

@@ -12,11 +12,12 @@ const userRoute=require('./Routes/userRoute');
 const authRoute=require('./Routes/authRoute');
 const ApiError=require('./utils/apiError');
 const globalError=require('./middlewares/ErrorMiddleware');
-
+const cors=require('cors')
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname,'uploads')));
-
+app.use(express.static(path.join(__dirname,'public')));
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
   console.log(`node:${process.env.NODE_ENV}`);
@@ -31,6 +32,7 @@ if (process.env.NODE_ENV === 'development') {
 app.get('/', (req, res) => {
   res.send('MY API 99');
 });
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 
 app.all('*', (req, res, next) => {
